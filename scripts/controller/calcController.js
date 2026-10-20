@@ -1,79 +1,161 @@
+
 class CalcController {
-  constructor() {
-    this._locale = "pt-BR";
-    this._displayCalcEl = document.querySelector("#display");
-    this._dateEl = document.querySelector("#data");
-    this._timeEl = document.querySelector("#hora");
-    this._currentDate;
-    this.initialize();
-    this.initButtonEvents();
-    this.addEventListenerAll();
-  }
+    constructor() {
 
-  initialize() {
-    this.setDisplayDateTime();
+        this._operation = [];
+        this._locale = "pt-BR";
+        this._displayCalcEl = document.querySelector("#display");
+        this._dateEl = document.querySelector("#data");
+        this._timeEl = document.querySelector("#hora");
+        this._currentDate;
+        this.initialize();
+        this.initButtonEvents();
+    }
 
-    let interval = setInterval(() => {
-      this.setDisplayDateTime();
-    }, 1000);
-  }
+    initialize() {
+        this.setDisplayDateTime();
 
-  addEventListenerAll(element, events, func) {
-    events.split(" ").forEach((event) => {
-      element.addEventListener(event, func, false);
-    });
-  }
+        let interval = setInterval(() => {
+            this.setDisplayDateTime();
+        }, 1000);
+    }
 
-  initButtonEvents() {
-    let buttons = document.querySelectorAll("#buttons > g, #parts > g");
+    addEventListenerAll(element, events, func) {
+        events.split(" ").forEach((event) => {
+            element.addEventListener(event, func, false);
+        });
+    }
 
-    buttons.forEach((btn, index) => {
-      this.addEventListenerAll(btn, "click drag", (event) => {
-        console.log(btn.className.baseVal.replace("btn-", ""));
-      });
-      this.addEventListenerAll(btn, "mouseover mouseup mousedown", (event) => {
-        btn.style.cursor = "pointer";
-      });
-    });
-  }
+    clearAll() {
+        this._operation = [];
+    }
 
-  setDisplayDateTime() {
-    this.displayDate = this.currentDate.toLocaleDateString(this._locale, {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-    });
-    this.displayTime = this.currentDate.toLocaleTimeString(this._locale);
-  }
+    cancelEntry() {
+        this._operation.pop();
+    }
 
-  get displayTime() {
-    return this._timeEl.innerHTML;
-  }
+    sum() {
 
-  set displayTime(value) {
-    return (this._timeEl.innerHTML = value);
-  }
+    }
 
-  get displayDate() {
-    return this._dateEl.innerHTML;
-  }
-  set displayDate(value) {
-    return (this._dateEl.innerHTML = value);
-  }
+    addOperation(value) {
 
-  get displayCalc() {
-    return this._displayCalcEl.innerHTML;
-  }
+        this._operation.push(value);
+        console.log( this._operation);
+    }
 
-  set displayCalc(value) {
-    this._displayCalcEl.innerHTML = value;
-  }
+    setError() {
+        this.displayCalc = "Error";
+    }
 
-  get currentDate() {
-    return new Date();
-  }
+    execBtn(value) {
+        switch (value) {
+            case 'ac':
+                this.clearAll();
+                break;
 
-  set currentDate(value) {
-    this._currentDate = value;
-  }
+            case 'ce':
+                this.cancelEntry();
+                break;
+
+            case 'soma':
+                this.sum();
+                break;
+
+            case 'subtracao':
+                this.sub();
+                break;
+
+            case 'divisao':
+                this.division();
+                break;
+
+            case 'multiplicacao':
+                this.multiply();
+                break;
+
+            case 'porcento':
+                this.percent();
+                break;
+
+            case 'igual':
+                this.percent();
+                break;
+
+
+            case '0':
+            case '1':
+            case '2':
+            case '3':
+            case '4':
+            case '5':
+            case '6':
+            case '7':
+            case '8':
+            case '9':
+                this.addOperation(parseInt(value));
+                break;
+
+            default:
+                this.setError();
+                break;
+        }
+    }
+
+    initButtonEvents() {
+        let buttons = document.querySelectorAll("#buttons > g, #parts > g");
+
+        buttons.forEach((btn, index) => {
+            this.addEventListenerAll(btn, "click drag", (event) => {
+                let textBtn = btn.className.baseVal.replace("btn-", "");
+                this.execBtn(textBtn);
+            });
+
+            this.addEventListenerAll(btn, "mouseover mouseup mousedown", (event) => {
+                btn.style.cursor = "pointer";
+            });
+        });
+    }
+
+    setDisplayDateTime() {
+        this.displayDate = this.currentDate.toLocaleDateString(this._locale, {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+        });
+
+        this.displayTime = this.currentDate.toLocaleTimeString(this._locale);
+    }
+
+    get displayTime() {
+        return this._timeEl.innerHTML;
+    }
+
+    set displayTime(value) {
+        return (this._timeEl.innerHTML = value);
+    }
+
+    get displayDate() {
+        return this._dateEl.innerHTML;
+    }
+
+    set displayDate(value) {
+        return (this._dateEl.innerHTML = value);
+    }
+
+    get displayCalc() {
+        return this._displayCalcEl.innerHTML;
+    }
+
+    set displayCalc(value) {
+        this._displayCalcEl.innerHTML = value;
+    }
+
+    get currentDate() {
+        return new Date();
+    }
+
+    set currentDate(value) {
+        this._currentDate = value;
+    }
 }
